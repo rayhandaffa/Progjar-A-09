@@ -19,6 +19,12 @@ sender.bind("tcp://*:5557")
 sink = context.socket(zmq.PUSH)
 sink.connect("tcp://localhost:5558")
 
+sink1 = context.socket(zmq.PUSH)
+sink1.connect("tcp://localhost:5559")
+
+sink2 = context.socket(zmq.PUSH)
+sink2.connect("tcp://localhost:5560")
+
 while True:
     print("Press Enter when the workers are ready: ")
     input()
@@ -31,12 +37,12 @@ while True:
     # random.seed()
 
     # Send 10 tasks
-    total_msec = 0
-    for task_nbr in range(10):
+    # total_msec = 0
+    for task_nbr in range(5):
 
         # Random workload from 1 to 100 msecs
         workload = random.randint(0, 2)
-        total_msec += workload
+        # if(workload == 0):
 
         sender.send_string(f"{workload}")
 
