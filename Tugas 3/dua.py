@@ -6,7 +6,7 @@
 import random, threading, time, zmq, sqlite3, os, sys, hashlib
 
 def randomizer():
-    return str(random.randint(0, 2))
+    return str(random.randint(0, 1))
 
 def query(num):
     db = sqlite3.connect("data.db")
@@ -31,52 +31,39 @@ def query(num):
     db.close()
     return hasil
 
-def generator(zcontext, url):
+def generator(zcontext, url, log_url):
     """Produce random points in the unit square."""
-    zsock = zcontext.socket(zmq.PUB)
+    zsock = zcontext.socket(zmq.REQ)
     zsock.bind(url)
+    osock = zcontext.socket(zmq.PUSH)
+    osock.connect(log_url)
     while True:
         zsock.send_string(randomizer())
         time.sleep(5)
-
-def executor_0(zcontext, in_url, out_url):
-    """Coordinates in the lower-left quadrant are inside the unit circle."""
-    isock = zcontext.socket(zmq.SUB)
-    isock.connect(in_url)
-    isock.setsockopt(zmq.SUBSCRIBE, b'0')
-    osock = zcontext.socket(zmq.PUSH)
-    osock.connect(out_url)
-    while True:
-        hasil_generator=isock.recv_string()
-        print(hasil_generator)
-        hasil = query(hasil_generator)
+        hasil = zsock.recv_string()
         osock.send_string(hasil)
 
-def executor_1(zcontext, in_url, out_url):
-    """Coordinates in the lower-left quadrant are inside the unit circle."""
-    isock = zcontext.socket(zmq.SUB)
-    isock.connect(in_url)
-    isock.setsockopt(zmq.SUBSCRIBE, b'1')
-    osock = zcontext.socket(zmq.PUSH)
-    osock.connect(out_url)
+def executor_0(zcontext, url):
+    """Return the sum-of-squares of number sequences."""
+    zsock = zcontext.socket(zmq.REP)
+    zsock.setsockopt(zmq.REQ_CORRELATE, b'0')
+    zsock.connect(url)
     while True:
-        hasil_generator=isock.recv_string()
-        print(hasil_generator)
+        hasil_generator = zsock.recv_string()
         hasil = query(hasil_generator)
-        osock.send_string(hasil)
+        zsock.send_string(hasil)
+        print("executor_0 berjalan")
 
-def executor_2(zcontext, in_url, out_url):
-    """Coordinates in the lower-left quadrant are inside the unit circle."""
-    isock = zcontext.socket(zmq.SUB)
-    isock.connect(in_url)
-    isock.setsockopt(zmq.SUBSCRIBE, b'2')
-    osock = zcontext.socket(zmq.PUSH)
-    osock.connect(out_url)
+def executor_1(zcontext, url):
+    """Return the sum-of-squares of number sequences."""
+    zsock = zcontext.socket(zmq.REP)
+    zsock.setsockopt(zmq.REQ_CORRELATE, b'1')
+    zsock.connect(url)
     while True:
-        hasil_generator=isock.recv_string()
-        print(hasil_generator)
+        hasil_generator = zsock.recv_string()
         hasil = query(hasil_generator)
-        osock.send_string(hasil)
+        zsock.send_string(hasil)
+        print("executor_1 berjalan")
 
 def tally(zcontext, url):
     """Tally how many points fall within the unit circle, and print pi."""
@@ -91,14 +78,12 @@ def start_thread(function, *args):
     thread.start()
 
 def main(zcontext):
-    pubsub = 'tcp://127.0.0.1:6700'
-    # reqrep = 'tcp://127.0.0.1:6701'
+    # pubsub = 'tcp://127.0.0.1:6700'
+    reqrep = 'tcp://127.0.0.1:6701'
     pushpull = 'tcp://127.0.0.1:6702'
-    # while True:
-    start_thread(generator, zcontext, pubsub)
-    start_thread(executor_0, zcontext, pubsub, pushpull)
-    start_thread(executor_1, zcontext, pubsub, pushpull)
-    start_thread(executor_2, zcontext, pubsub, pushpull)
+    start_thread(generator, zcontext, reqrep, pushpull)
+    start_thread(executor_0, zcontext, reqrep)
+    start_thread(executor_1, zcontext, reqrep)
     start_thread(tally, zcontext, pushpull)
     time.sleep(5)
 
