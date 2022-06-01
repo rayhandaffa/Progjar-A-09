@@ -39,25 +39,25 @@ def generator(zcontext, url, log_url):
     osock.connect(log_url)
     while True:
         zsock.send_string(randomizer())
-        time.sleep(5)
         hasil = zsock.recv_string()
         osock.send_string(hasil)
 
-def executor_0(zcontext, url):
+def executor(zcontext, url):
     """Return the sum-of-squares of number sequences."""
     zsock = zcontext.socket(zmq.REP)
-    zsock.setsockopt(zmq.REQ_CORRELATE, b'0')
+    for prefix in b'0', b'1':
+        zsock.setsockopt(zmq.IDENTITY, prefix)
     zsock.connect(url)
     while True:
         hasil_generator = zsock.recv_string()
         hasil = query(hasil_generator)
         zsock.send_string(hasil)
-        print("executor_0 berjalan")
+        # print("executor berjalan")
 
 def executor_1(zcontext, url):
     """Return the sum-of-squares of number sequences."""
     zsock = zcontext.socket(zmq.REP)
-    zsock.setsockopt(zmq.REQ_CORRELATE, b'1')
+    zsock.setsockopt(zmq.HWM , b'1')
     zsock.connect(url)
     while True:
         hasil_generator = zsock.recv_string()
@@ -82,8 +82,8 @@ def main(zcontext):
     reqrep = 'tcp://127.0.0.1:6701'
     pushpull = 'tcp://127.0.0.1:6702'
     start_thread(generator, zcontext, reqrep, pushpull)
-    start_thread(executor_0, zcontext, reqrep)
-    start_thread(executor_1, zcontext, reqrep)
+    start_thread(executor, zcontext, reqrep)
+    # start_thread(executor_1, zcontext, reqrep)
     start_thread(tally, zcontext, pushpull)
     time.sleep(5)
 

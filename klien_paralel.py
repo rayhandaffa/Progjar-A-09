@@ -25,10 +25,14 @@ def worker(address, i, data):
 
     message = ""
     for ii in data: # untuk setiap ii dalam data
-        ii = ii.strip() # dilakukan strip terlebih dahulu, karen di paling kanan masih ada newline
+        
+        #proses kirim ke server
+        ii = ii.strip() # dilakukan strip terlebih dahulu, karena di paling kanan masih ada newline
         len_msg = b"%03d" % (len(ii),) # panjang pesan
         msg = len_msg + bytes(ii, encoding="ascii")
         sock.sendall(msg) # mengirim pesan
+
+        #menerima hasil kerja server
         len_msg = recvall(sock, 3) # menerima panjang pesan
         message = recvall(sock, int(len_msg)) # menerima pesan yang masuk
         message = str(message, encoding="ascii")
