@@ -40,7 +40,7 @@ def get(*args):
     b = f.read()
     #print(len(b))
     f.close()
-
+    shutil.copy(pesanGet, r'client')
     results = "fetch: {} size: {} lokal: {}".format(pesan, len(b), msgSplit[-1])
     return results
 
