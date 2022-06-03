@@ -4,6 +4,7 @@
 # JSON-RPC server needing "pip install jsonrpclib-pelix"
 
 import glob
+import shutil
 from time import sleep
 from jsonrpclib.SimpleJSONRPCServer import SimpleJSONRPCServer
 
@@ -44,18 +45,24 @@ def get(*args):
     return results
 
 def put(*args):
-    return
+    results = []
+    msgSplit=args[0].split()
+    namaFile = msgSplit[1]
+    namaTujuan = msgSplit[2]
+    # print(namaFile, " ", namaTujuan)
+    shutil.copy(namaFile, namaTujuan)
+    return "successed put {} to {}".format(namaFile, namaTujuan)
 
 def quit(*args):
     print("Quitting Client")
-    return
+    return "Client shutting down"
 
 def main():
     server = SimpleJSONRPCServer(('localhost', 7002))
     server.register_function(quit)
     server.register_function(get)
     server.register_function(ls)
-    server.register_function(count)
+    server.register_function(put)
     server.register_function(count)
     print("Starting server")
     server.serve_forever()

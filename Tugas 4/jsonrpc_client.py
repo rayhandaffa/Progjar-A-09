@@ -18,12 +18,14 @@ def main():
             print(proxy.get(msg))
         elif(msgSplit[0]=="count"):
             print(proxy.count(msg))
+        elif(msgSplit[0]=="put"):
+            print(proxy.put(msg))
         elif(msgSplit[0]=="quit"):
-            proxy.quit()
+            print(proxy.quit())
             proxy('close')()
             return
+        else:
+            print("Invalid Command")
         
-    # print(proxy.lengths((1,2,3), 27, {'Sirius': -1.46, 'Rigel': 0.12}))
-
 if __name__ == '__main__':
     main()
