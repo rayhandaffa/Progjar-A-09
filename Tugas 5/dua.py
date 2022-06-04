@@ -5,12 +5,6 @@ import requests
 def get_soup(url):
     return BeautifulSoup(requests.get(url).text, 'html.parser')
 
-# search = input("Masukkan kata kunci: ")
-# url = "https://www.google.com/search?q=" + search
-# soup = get_soup(url)
-# for i in soup.find_all('a'):
-#     print(i.get('href'))
-
 def getGoPackage(msg, num):
     url = "https://pkg.go.dev/search?limit={}&m=package&q={}#more-results".format(num, msg)
     soup = get_soup(url)
@@ -22,11 +16,7 @@ def getGoPackage(msg, num):
 
         #Get p and a tag with beautifulsoup in class SearchSnippet
         p = hasil.find_all('p')
-        # print(p)
 
-        #check text in p tag not null
-        #Get text from p tag
-        #check text in p tag not null
         if (p != []):    
             text = p[0].get_text().split(' ')
             text = text[12:]
@@ -72,7 +62,7 @@ def getGoBlog(msg):
 
 def main():   
     getGoPackage("sort", 30)
-    # getGoBlog("llrb+petar")
+    getGoBlog("llrb+petar")
 
 if __name__ == '__main__':
     main()
