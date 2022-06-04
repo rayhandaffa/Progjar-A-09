@@ -12,26 +12,35 @@ def get_soup(url):
 #     print(i.get('href'))
 
 def getGoPackage(msg, num):
-    url = "https://pkg.go.dev/search?q=" + msg
+    url = "https://pkg.go.dev/search?limit={}&m=package&q={}#more-results".format(num, msg)
     soup = get_soup(url)
-    #Get value tag a with beautifoulsoup in article tag
-    tag = soup.find_all('article')
-    
-    #Get value tag a with beautifulsoup in article tag
-    tag_a = tag[0].find_all('a')
-    
-    total=1
-    for i in tag_a:
+
+    #Get value with beautifoulsoup in class SearchSnippet
+    SearchSnippet = soup.find_all('div', class_='SearchSnippet')
+    total = 1 
+    for hasil in SearchSnippet:
+
+        #Get p and a tag with beautifulsoup in class SearchSnippet
+        p = hasil.find_all('p')
+        # print(p)
+
+        #check text in p tag not null
+        #Get text from p tag
+        #check text in p tag not null
+        if (p != []):    
+            text = p[0].get_text().split(' ')
+            text = text[12:]
+            text = ' '.join(text)
+        else:
+            text ="Tidak ada"
+
+        #Get text from a tag
+        link = hasil.find_all('a')
+        url_hasil_search = "https://pkg.go.dev/" + link[0].get('href')
         
-        #Get value tag a with beautifulsoup in article tag
-        # tag_a_href = tag_a[i].get('href')
-        #Get value tag a with beautifulsoup in article tag
-        tag_a_text = i.get_text()
-        print("{}. akan mengambil: {}".format(total, tag_a_text))
+        print("Hasil {}\nkegunaan package: {}\nUrl: {}\n\n".format(total, text, url_hasil_search))
         total+=1
-        if total == num+1:
-            break
-    
+
     return True
 
 def getGoBlog(msg):
@@ -62,8 +71,8 @@ def getGoBlog(msg):
     return True
 
 def main():   
-    # getGoPackage("llrb", 10)
-    getGoBlog("llrb+petar")
+    getGoPackage("sort", 30)
+    # getGoBlog("llrb+petar")
 
 if __name__ == '__main__':
     main()
