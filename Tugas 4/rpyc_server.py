@@ -32,7 +32,6 @@ class MyService(rpyc.Service):
 
         f = open(pesanGet, "rb")
         b = f.read()
-        #print(len(b))
         f.close()
         shutil.copy(pesanGet, r'client')
 

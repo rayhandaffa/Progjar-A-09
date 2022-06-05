@@ -14,15 +14,10 @@ def query(num):
 
     total = 0
     value = 0
-    # for i in range(1000):
     n1 = random.randint(1, 99000)
     n2 = random.randint(1, 1000)
     mod = "length(FirstNameLastName)"
     sql = "select count(*) from MOCKDATA where (ID>={} AND ID<={})   = {};".format(n1, n1+n2, mod, num)
-    # h = hash(sql)
-    # if h % 2 == 0:
-        # hasil = "n1 = {}, n2 = {}, num = {}, hasil = nol".format(n1, n2, num)
-    # else:
     cur.execute(sql)
     value = int(cur.fetchone()[0])
     
@@ -37,7 +32,6 @@ def generator(zcontext, url):
     zsock.bind(url)
     while True:
         zsock.send_string(randomizer())
-        # time.sleep(0.1)
 
 def executor_0(zcontext, in_url, out_url):
     """Coordinates in the lower-left quadrant are inside the unit circle."""
@@ -48,7 +42,6 @@ def executor_0(zcontext, in_url, out_url):
     osock.connect(out_url)
     while True:
         hasil_generator=isock.recv_string()
-        # print(hasil_generator)
         hasil = query(hasil_generator)
         osock.send_string(hasil)
 
@@ -61,7 +54,6 @@ def executor_1(zcontext, in_url, out_url):
     osock.connect(out_url)
     while True:
         hasil_generator=isock.recv_string()
-        # print(hasil_generator)
         hasil = query(hasil_generator)
         osock.send_string(hasil)
 
@@ -74,7 +66,6 @@ def executor_2(zcontext, in_url, out_url):
     osock.connect(out_url)
     while True:
         hasil_generator=isock.recv_string()
-        # print(hasil_generator)
         hasil = query(hasil_generator)
         osock.send_string(hasil)
 
@@ -92,9 +83,7 @@ def start_thread(function, *args):
 
 def main(zcontext):
     pubsub = 'tcp://127.0.0.1:6700'
-    # reqrep = 'tcp://127.0.0.1:6701'
     pushpull = 'tcp://127.0.0.1:6702'
-    # while True:
     start_thread(generator, zcontext, pubsub)
     start_thread(executor_0, zcontext, pubsub, pushpull)
     start_thread(executor_1, zcontext, pubsub, pushpull)

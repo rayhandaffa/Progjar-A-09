@@ -38,7 +38,6 @@ def get(*args):
 
     f = open(pesanGet, "rb")
     b = f.read()
-    #print(len(b))
     f.close()
     shutil.copy(pesanGet, r'client')
     results = "fetch: {} size: {} lokal: {}".format(pesan, len(b), msgSplit[-1])
@@ -49,7 +48,6 @@ def put(*args):
     msgSplit=args[0].split()
     namaFile = msgSplit[1]
     namaTujuan = msgSplit[2]
-    # print(namaFile, " ", namaTujuan)
     shutil.copy(namaFile, namaTujuan)
     return "successed put {} to {}".format(namaFile, namaTujuan)
 

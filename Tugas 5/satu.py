@@ -15,9 +15,7 @@ def getGoBlog(num):
     
     total=1
     for i in tag_a:
-        
-        #Get value tag a with beautifulsoup in article tag
-        # tag_a_href = tag_a[i].get('href')
+
         #Get value tag a with beautifulsoup in article tag
         tag_a_text = i.get_text()
         print("{}. akan mengambil: {}".format(total, tag_a_text))

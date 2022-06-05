@@ -14,7 +14,6 @@ def query(num):
 
     total = 0
     value = 0
-    # for i in range(1000):
     n1 = random.randint(1, 99000)
     n2 = random.randint(1, 1000)
     mod = "length(FirstNameLastName)"
@@ -52,18 +51,6 @@ def executor(zcontext, url):
         hasil_generator = zsock.recv_string()
         hasil = query(hasil_generator)
         zsock.send_string(hasil)
-        # print("executor berjalan")
-
-def executor_1(zcontext, url):
-    """Return the sum-of-squares of number sequences."""
-    zsock = zcontext.socket(zmq.REP)
-    zsock.setsockopt(zmq.HWM , b'1')
-    zsock.connect(url)
-    while True:
-        hasil_generator = zsock.recv_string()
-        hasil = query(hasil_generator)
-        zsock.send_string(hasil)
-        print("executor_1 berjalan")
 
 def tally(zcontext, url):
     """Tally how many points fall within the unit circle, and print pi."""
@@ -78,12 +65,10 @@ def start_thread(function, *args):
     thread.start()
 
 def main(zcontext):
-    # pubsub = 'tcp://127.0.0.1:6700'
     reqrep = 'tcp://127.0.0.1:6701'
     pushpull = 'tcp://127.0.0.1:6702'
     start_thread(generator, zcontext, reqrep, pushpull)
     start_thread(executor, zcontext, reqrep)
-    # start_thread(executor_1, zcontext, reqrep)
     start_thread(tally, zcontext, pushpull)
     time.sleep(5)
 
