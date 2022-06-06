@@ -7,7 +7,7 @@ modul yang digunakan:
 	https://docs.python.org/3/library/urllib.parse.html
 
 - requests
-	pip install requests
+	pip intall requests
 	https://www.geeksforgeeks.org/python-requests-tutorial/
 
 - beautifulsoup4
